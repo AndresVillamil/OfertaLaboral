@@ -4,7 +4,8 @@
 const express = require('express');
 const mongoose = require('mongoose');
 //Importar Schema
-const TareaSchema = require('./modelos/Tarea.js');
+const OfertaSchema = require('./modelos/Oferta.js');
+const SolicitanteSchema = require('./modelos/Solicitante.js');
 
 const app = express();
 //Ruta
@@ -12,38 +13,76 @@ const router = express.Router();
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 //Conexión a base de datos desde NodeJS 
-mongoose.connect("mongodb+srv://prog_web:1234@clusterprogramacionweb.pz9qz.mongodb.net/ActividadesDB?retryWrites=true&w=majority");
+mongoose.connect("mongodb+srv://prog_web:1234@clusterprogramacionweb.pz9qz.mongodb.net/OfertasDB?retryWrites=true&w=majority");
 
 //Operaciones CRUD
 router.get('/', (req, res) => {
     res.send("El inicio de mi API");
 })
 
-router.get('/tarea', (req, res) => {
-    TareaSchema.find(function(err,datos){
+router.get('/oferta', (req, res) => {
+    OfertaSchema.find(function(err,datos){
         if(err){
-            console.log("Error leyendo las tareas");
+            console.log("Error leyendo las ofertas");
         }else{
             res.send(datos);
         }
     })
 });
 
-router.post('/tarea', (req, res) => {
-    let nuevaTarea =new TareaSchema({
-        idTarea: req.body.id,
-        nombreTarea: req.body.nombre,
-        detalleTarea: req.body.detalle
+/***** */
+router.get('/solicitante', (req, res) => {
+    SolicitanteSchema.find(function(err,datos){
+        if(err){
+            console.log("Error leyendo las solicitudes");
+        }else{
+            res.send(datos);
+        }
+    })
+});
+/******************************** */
+router.post('/oferta', (req, res) => {
+    let nuevaOferta =new OfertaSchema({
+        idOferta: req.body.id,
+        nombreOferta: req.body.nombre,
+        detalleOferta: req.body.detalle
     });
 
-    nuevaTarea.save(function(err, datos){
+    nuevaOferta.save(function(err, datos){
         if(err){
             console.log(err);
         }
-        res.send("Tarea almacenada correctamente");
+        res.send("Oferta almacenada correctamente");
     })
 });
 
+/********************************** */
+router.post('/solicitante', (req, res) => {
+    let nuevaSolicitud =new SolicitanteSchema({
+    idSolicitante: req.body.id,
+    tipoDocumento: req.body.tipoDocumento,
+    documentoIdentificacion: req.body.documentoIdentificacion,
+    nombreSolicitante: req.body.nombreSolicitante,
+    apellidoSolicitante: req.body.apellidoSolicitante,
+    direccionSolicitante : req.body.direccionSolicitante,
+    correoElectronico: req.body.correoElectronico,
+    telfonoFijo: req.body.telfonoFijo,
+    telfonoCelular : req.body.telfonoCelular,
+    enlaceSitioWeb: req.body.enlaceSitioWeb,
+    descripcionPerfil: req.body.descripcionPerfil
+    });
+
+    
+
+    nuevaSolicitud.save(function(err, datos){
+        if(err){
+            console.log(err);
+        }
+        res.send("Solicitud almacenada correctamente");
+    })
+});
+
+/********************************** */
 //Prueba API Rest
 
 app.use(router);
